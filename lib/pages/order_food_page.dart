@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class OrderFoodPage extends StatefulWidget {
   @override
@@ -7,11 +8,27 @@ class OrderFoodPage extends StatefulWidget {
 }
 
 class _OrderFoodPageState extends State<OrderFoodPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Inisialisasi Firebase
+    Firebase.initializeApp(
+      name: 'marestoku',
+      options: const FirebaseOptions(
+        appId: '1:225202683902:web:bfc3afc78be77ba410caaf',
+        apiKey: 'AIzaSyCedz-uO0ql74PDHxwI3FrEWmyHo_WvHCY',
+        projectId: 'marestoku',
+        messagingSenderId: '225202683902',
+        storageBucket: 'marestoku.appspot.com',
+        authDomain: 'marestoku.firebaseapp.com',
+      ),
+    );
+  }
   int quantity = 1;
   List<String> cart = [];
   List<String> foods = ["Pizza", "Burger", "Pasta"];
   Map<String, int> orders = {};
- // Jumlah pesanan awal
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -36,7 +53,7 @@ class _OrderFoodPageState extends State<OrderFoodPage> {
                   } else {
                     orders[food] = 1;
                   }
-                  setState(() {}); // Memicu tampilan diperbarui
+                  setState(() {});
                 },
                 child: Card(
                   child: ListTile(
@@ -84,7 +101,7 @@ class _OrderFoodPageState extends State<OrderFoodPage> {
               }
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(
-                  content: Text('Pesanan Anda telah disimpan ke Firestore.'),
+                  content: Text('Pesanan Anda telah disimpan.'),
                 ),
               );
             }, child: const Text('Simpan'))
@@ -97,6 +114,7 @@ class _OrderFoodPageState extends State<OrderFoodPage> {
 
 Future<void> saveOrderToFirestore(String foodName, int quantity) async {
   final ordersCollection = FirebaseFirestore.instance.collection('orders');
+  print(ordersCollection);
   await ordersCollection.add({
     'foodName': foodName,
     'quantity': quantity,
